@@ -9,11 +9,15 @@ use App\Domain\Appointment\Entities\Appointment;
 use App\Domain\Appointment\Enums\AppointmentStatus;
 use App\Domain\Appointment\Exceptions\AppointmentNotFoundException;
 use App\Domain\Appointment\Repositories\AppointmentRepositoryInterface;
+use App\Domain\Shared\Tenancy\CurrentTenant;
+use App\Presentation\Queue\Jobs\PostAppointmentReviewJob;
 
 final class UpdateAppointmentStatusUseCase
 {
-    public function __construct(private readonly AppointmentRepositoryInterface $appointments)
-    {
+    public function __construct(
+        private readonly AppointmentRepositoryInterface $appointments,
+        private readonly CurrentTenant $currentTenant,
+    ) {
     }
 
     public function handle(int $id, UpdateAppointmentStatusDTO $dto): Appointment
@@ -24,8 +28,15 @@ final class UpdateAppointmentStatusUseCase
             throw new AppointmentNotFoundException($id);
         }
 
-        $updated = $appointment->withStatus(AppointmentStatus::from($dto->status));
+        $newStatus = AppointmentStatus::from($dto->status);
+        $wasCompleted = $appointment->status() === AppointmentStatus::Completed;
 
-        return $this->appointments->update($updated);
+        $updated = $this->appointments->update($appointment->withStatus($newStatus));
+
+        if ($newStatus === AppointmentStatus::Completed && ! $wasCompleted) {
+            PostAppointmentReviewJob::dispatch($updated->id(), $this->currentTenant->id()->value());
+        }
+
+        return $updated;
     }
 }

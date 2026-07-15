@@ -106,6 +106,23 @@ final class AppointmentRepository implements AppointmentRepositoryInterface
             ->exists();
     }
 
+    public function dueForReminder(DateTimeImmutable $windowStart, DateTimeImmutable $windowEnd): array
+    {
+        return AppointmentModel::whereIn('status', [AppointmentStatus::Scheduled->value, AppointmentStatus::Confirmed->value])
+            ->whereNull('reminder_sent_at')
+            ->where('starts_at', '>=', $windowStart)
+            ->where('starts_at', '<', $windowEnd)
+            ->orderBy('starts_at')
+            ->get()
+            ->map(fn (AppointmentModel $model) => $this->mapper->toDomain($model))
+            ->all();
+    }
+
+    public function markReminderSent(int $id, DateTimeImmutable $at): void
+    {
+        AppointmentModel::where('id', $id)->update(['reminder_sent_at' => $at]);
+    }
+
     public function busyIntervalsFor(int $professionalId, DateTimeImmutable $start, DateTimeImmutable $end): array
     {
         return AppointmentModel::where('professional_id', $professionalId)

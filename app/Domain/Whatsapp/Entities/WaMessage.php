@@ -26,6 +26,7 @@ final class WaMessage
         private ?WaMessageStatus $status = null,
         private ?DateTimeImmutable $statusUpdatedAt = null,
         private ?string $statusError = null,
+        private ?int $appointmentId = null,
     ) {
     }
 
@@ -43,8 +44,9 @@ final class WaMessage
         WaMessageSenderType $senderType,
         ?int $senderId,
         ?DateTimeImmutable $receivedAt,
+        ?int $appointmentId = null,
     ): self {
-        return new self(null, $conversationId, $wamid, $direction, $type, $body, $payload, $contextWamid, $senderType, $senderId, $receivedAt);
+        return new self(null, $conversationId, $wamid, $direction, $type, $body, $payload, $contextWamid, $senderType, $senderId, $receivedAt, null, null, null, $appointmentId);
     }
 
     /**
@@ -65,8 +67,9 @@ final class WaMessage
         ?WaMessageStatus $status = null,
         ?DateTimeImmutable $statusUpdatedAt = null,
         ?string $statusError = null,
+        ?int $appointmentId = null,
     ): self {
-        return new self($id, $conversationId, $wamid, $direction, $type, $body, $payload, $contextWamid, $senderType, $senderId, $receivedAt, $status, $statusUpdatedAt, $statusError);
+        return new self($id, $conversationId, $wamid, $direction, $type, $body, $payload, $contextWamid, $senderType, $senderId, $receivedAt, $status, $statusUpdatedAt, $statusError, $appointmentId);
     }
 
     public function withStatus(WaMessageStatus $status, DateTimeImmutable $updatedAt, ?string $error): self
@@ -86,6 +89,7 @@ final class WaMessage
             $status,
             $updatedAt,
             $error,
+            $this->appointmentId,
         );
     }
 
@@ -160,5 +164,10 @@ final class WaMessage
     public function statusError(): ?string
     {
         return $this->statusError;
+    }
+
+    public function appointmentId(): ?int
+    {
+        return $this->appointmentId;
     }
 }

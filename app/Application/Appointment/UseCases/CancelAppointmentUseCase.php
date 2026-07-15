@@ -9,11 +9,15 @@ use App\Domain\Appointment\Enums\AppointmentStatus;
 use App\Domain\Appointment\Exceptions\AppointmentNotFoundException;
 use App\Domain\Appointment\Exceptions\InvalidStatusTransitionException;
 use App\Domain\Appointment\Repositories\AppointmentRepositoryInterface;
+use App\Domain\Shared\Tenancy\CurrentTenant;
+use App\Presentation\Queue\Jobs\ManagerCancellationNotificationJob;
 
 final class CancelAppointmentUseCase
 {
-    public function __construct(private readonly AppointmentRepositoryInterface $appointments)
-    {
+    public function __construct(
+        private readonly AppointmentRepositoryInterface $appointments,
+        private readonly CurrentTenant $currentTenant,
+    ) {
     }
 
     public function handle(int $id): Appointment
@@ -28,8 +32,10 @@ final class CancelAppointmentUseCase
             throw new InvalidStatusTransitionException('Não é possível cancelar um appointment já cancelado ou concluído.');
         }
 
-        $updated = $appointment->withStatus(AppointmentStatus::Cancelled);
+        $updated = $this->appointments->update($appointment->withStatus(AppointmentStatus::Cancelled));
 
-        return $this->appointments->update($updated);
+        ManagerCancellationNotificationJob::dispatch($updated->id(), $this->currentTenant->id()->value());
+
+        return $updated;
     }
 }

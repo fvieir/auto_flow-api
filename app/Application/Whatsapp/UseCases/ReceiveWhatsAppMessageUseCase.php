@@ -15,13 +15,17 @@ use App\Domain\Whatsapp\Enums\WaMessageSenderType;
 use App\Domain\Whatsapp\Events\WhatsAppMessageReceived;
 use App\Domain\Whatsapp\Repositories\WaConversationRepositoryInterface;
 use App\Domain\Whatsapp\Repositories\WaMessageRepositoryInterface;
+use App\Presentation\Queue\Jobs\ProcessConfirmationResponseJob;
 
 final class ReceiveWhatsAppMessageUseCase
 {
+    private const APPOINTMENT_BUTTON_IDS = ['appointment_confirm', 'appointment_cancel'];
+
     public function __construct(
         private readonly WaConversationRepositoryInterface $conversations,
         private readonly WaMessageRepositoryInterface $messages,
         private readonly ResolveOrCreateLeadUseCase $resolveOrCreateLead,
+        private readonly BufferWhatsAppMessageUseCase $bufferMessage,
         private readonly CurrentTenant $currentTenant,
     ) {
     }
@@ -55,6 +59,16 @@ final class ReceiveWhatsAppMessageUseCase
         ));
 
         event(new WhatsAppMessageReceived($tenantId, $conversation->id(), $message->id()));
+
+        $buttonId = $dto->payload['interactive']['button_reply']['id'] ?? null;
+
+        if ($dto->type === 'interactive' && in_array($buttonId, self::APPOINTMENT_BUTTON_IDS, true) && $message->contextWamid() !== null) {
+            ProcessConfirmationResponseJob::dispatch($message->id());
+
+            return $message;
+        }
+
+        $this->bufferMessage->handle($tenantId, $conversation->id(), $message->id(), $message->body());
 
         return $message;
     }

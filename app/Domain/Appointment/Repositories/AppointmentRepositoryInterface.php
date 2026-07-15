@@ -49,4 +49,15 @@ interface AppointmentRepositoryInterface
      * desse cliente criado depois do início da conversa?
      */
     public function existsForClientCreatedAfter(int $clientId, DateTimeImmutable $after): bool;
+
+    /**
+     * Agendamentos scheduled/confirmed dentro da janela, ainda sem lembrete
+     * enviado (reminder_sent_at null). Escopo por tenant vem do CurrentTenant
+     * já setado pelo caller antes de chamar este método.
+     *
+     * @return list<Appointment>
+     */
+    public function dueForReminder(DateTimeImmutable $windowStart, DateTimeImmutable $windowEnd): array;
+
+    public function markReminderSent(int $id, DateTimeImmutable $at): void;
 }

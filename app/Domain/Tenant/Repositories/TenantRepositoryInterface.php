@@ -19,6 +19,11 @@ interface TenantRepositoryInterface
     public function existsBySlug(TenantSlug $slug): bool;
 
     /**
+     * @return list<Tenant>
+     */
+    public function listActive(): array;
+
+    /**
      * Persiste o tenant + o usuário admin + o vínculo em tenant_users (role=admin),
      * numa única transação. Retorna a entidade Tenant já com id.
      */

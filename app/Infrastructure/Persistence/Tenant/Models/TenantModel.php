@@ -26,6 +26,7 @@ final class TenantModel extends Model
         'timezone',
         'gateway_customer_id',
         'coleta_entrega_habilitado',
+        'manager_phone',
     ];
 
     protected $casts = [

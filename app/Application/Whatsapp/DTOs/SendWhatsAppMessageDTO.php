@@ -25,6 +25,7 @@ final class SendWhatsAppMessageDTO
         public readonly ?array $interactive,
         public readonly string $senderType,
         public readonly ?int $senderId,
+        public readonly ?int $appointmentId = null,
     ) {
     }
 

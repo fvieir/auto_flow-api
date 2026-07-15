@@ -30,9 +30,17 @@ final class WaMessageRepository implements WaMessageRepositoryInterface
             'sender_type' => $message->senderType()->value,
             'sender_id' => $message->senderId(),
             'received_at' => $message->receivedAt(),
+            'appointment_id' => $message->appointmentId(),
         ]);
 
         return $this->mapper->toDomain($model);
+    }
+
+    public function findById(int $id): ?WaMessage
+    {
+        $model = WaMessageModel::find($id);
+
+        return $model !== null ? $this->mapper->toDomain($model) : null;
     }
 
     public function findByWamid(string $wamid): ?WaMessage

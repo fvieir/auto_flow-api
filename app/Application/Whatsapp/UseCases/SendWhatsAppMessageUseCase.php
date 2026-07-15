@@ -110,6 +110,7 @@ final class SendWhatsAppMessageUseCase
             senderType: WaMessageSenderType::from($dto->senderType),
             senderId: $dto->senderId,
             receivedAt: null,
+            appointmentId: $dto->appointmentId,
         );
 
         return $this->messages->create($message);

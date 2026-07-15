@@ -21,6 +21,7 @@ final class Tenant
         private TenantSlug $slug,
         private TenantStatus $status,
         private string $timezone,
+        private ?string $managerPhone = null,
     ) {
     }
 
@@ -41,8 +42,9 @@ final class Tenant
         TenantSlug $slug,
         TenantStatus $status,
         string $timezone,
+        ?string $managerPhone = null,
     ): self {
-        return new self($id, $name, $slug, $status, $timezone);
+        return new self($id, $name, $slug, $status, $timezone, $managerPhone);
     }
 
     public function id(): ?TenantId
@@ -68,5 +70,10 @@ final class Tenant
     public function timezone(): string
     {
         return $this->timezone;
+    }
+
+    public function managerPhone(): ?string
+    {
+        return $this->managerPhone;
     }
 }

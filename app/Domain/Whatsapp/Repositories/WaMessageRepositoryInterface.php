@@ -12,6 +12,8 @@ interface WaMessageRepositoryInterface
 {
     public function create(WaMessage $message): WaMessage;
 
+    public function findById(int $id): ?WaMessage;
+
     public function findByWamid(string $wamid): ?WaMessage;
 
     public function updateStatus(int $id, WaMessageStatus $status, DateTimeImmutable $updatedAt, ?string $error): WaMessage;

@@ -29,6 +29,7 @@ final class WaMessageMapper
             status: $model->status !== null ? WaMessageStatus::from($model->status) : null,
             statusUpdatedAt: $model->status_updated_at?->toDateTimeImmutable(),
             statusError: $model->status_error,
+            appointmentId: $model->appointment_id !== null ? (int) $model->appointment_id : null,
         );
     }
 }

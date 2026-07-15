@@ -20,6 +20,7 @@ final class TenantMapper
             slug: new TenantSlug($model->slug),
             status: TenantStatus::from($model->status),
             timezone: $model->timezone,
+            managerPhone: $model->manager_phone,
         );
     }
 }

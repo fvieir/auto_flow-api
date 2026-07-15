@@ -31,6 +31,7 @@ final class WaMessageModel extends Model
         'status',
         'status_updated_at',
         'status_error',
+        'appointment_id',
     ];
 
     protected $casts = [

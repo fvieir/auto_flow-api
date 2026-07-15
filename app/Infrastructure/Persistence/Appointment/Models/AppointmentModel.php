@@ -26,12 +26,14 @@ final class AppointmentModel extends Model
         'duration_minutes',
         'ends_at',
         'status',
+        'reminder_sent_at',
     ];
 
     protected $casts = [
         'starts_at' => 'immutable_datetime',
         'ends_at' => 'immutable_datetime',
         'duration_minutes' => 'integer',
+        'reminder_sent_at' => 'immutable_datetime',
     ];
 
     public function client(): BelongsTo

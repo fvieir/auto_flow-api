@@ -68,6 +68,7 @@ COPY ./.docker/php-fpm/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY ./.docker/supervisor/supervisord.conf /etc/supervisord.conf
 COPY ./.docker/supervisor/php-fpm.conf /etc/supervisor/conf.d/php-fpm.conf
 COPY ./.docker/supervisor/horizon.conf /etc/supervisor/conf.d/horizon.conf
+COPY ./.docker/supervisor/scheduler.conf /etc/supervisor/conf.d/scheduler.conf
 
 # Permissões mínimas
 RUN mkdir -p /var/www/storage/logs /var/run/php /var/log/supervisor \

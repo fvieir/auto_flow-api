@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence\Tenant\Repositories;
 
 use App\Domain\Shared\ValueObjects\TenantId;
 use App\Domain\Tenant\Entities\Tenant;
+use App\Domain\Tenant\Enums\TenantStatus;
 use App\Domain\Tenant\Events\TenantCreated;
 use App\Domain\Tenant\Repositories\TenantRepositoryInterface;
 use App\Domain\Tenant\ValueObjects\TenantSlug;
@@ -30,6 +31,14 @@ final class TenantRepository implements TenantRepositoryInterface
     public function existsBySlug(TenantSlug $slug): bool
     {
         return TenantModel::where('slug', $slug->value())->exists();
+    }
+
+    public function listActive(): array
+    {
+        return TenantModel::where('status', '!=', TenantStatus::Suspended->value)
+            ->get()
+            ->map(fn (TenantModel $model) => $this->mapper->toDomain($model))
+            ->all();
     }
 
     public function createWithAdmin(
