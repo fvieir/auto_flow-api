@@ -1,5 +1,16 @@
 <?php
 
+use App\Presentation\Http\Controllers\Client\CreateClientController;
+use App\Presentation\Http\Controllers\Client\CreateAddressController;
+use App\Presentation\Http\Controllers\Client\DeleteClientController;
+use App\Presentation\Http\Controllers\Client\DeleteAddressController;
+use App\Presentation\Http\Controllers\Client\GetClientContextController;
+use App\Presentation\Http\Controllers\Client\ListClientsController;
+use App\Presentation\Http\Controllers\Client\ListAddressesController;
+use App\Presentation\Http\Controllers\Client\SearchClientsController;
+use App\Presentation\Http\Controllers\Client\SetPrimaryAddressController;
+use App\Presentation\Http\Controllers\Client\UpdateClientController;
+use App\Presentation\Http\Controllers\Client\UpdateAddressController;
 use App\Presentation\Http\Controllers\Me\GetMeController;
 use App\Presentation\Http\Controllers\Professional\CreateScheduleBlockController;
 use App\Presentation\Http\Controllers\Professional\CreateWorkScheduleController;
@@ -44,4 +55,17 @@ Route::middleware(['force.auth', 'resolve.tenant'])->group(function (): void {
     Route::post('/services', CreateServiceController::class);
     Route::put('/services/{service}', UpdateServiceController::class);
     Route::delete('/services/{service}', DeleteServiceController::class);
+
+    Route::get('/clients/search', SearchClientsController::class);
+    Route::get('/clients', ListClientsController::class);
+    Route::post('/clients', CreateClientController::class);
+    Route::patch('/clients/{client}', UpdateClientController::class);
+    Route::delete('/clients/{client}', DeleteClientController::class);
+
+    Route::get('/clients/{client}/addresses', ListAddressesController::class);
+    Route::post('/clients/{client}/addresses', CreateAddressController::class);
+    Route::put('/clients/{client}/addresses/{address}', UpdateAddressController::class);
+    Route::delete('/clients/{client}/addresses/{address}', DeleteAddressController::class);
+    Route::patch('/clients/{client}/addresses/{address}/primary', SetPrimaryAddressController::class);
+    Route::get('/clients/{client}/context', GetClientContextController::class);
 });
