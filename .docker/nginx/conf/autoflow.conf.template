@@ -1,0 +1,34 @@
+server {
+    # Porta interna do nginx
+    listen 80;
+    server_name ${SERVER_NAME};       # Nginx trata default como 80, portanto não precisa colocar ':80'
+
+    root ${ROOT_PATH};
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+        gzip_static on;
+    }
+
+    # Configuração para tratar solicitações PHP
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+        # --- API TIMEOUT ---
+        # PHP-FPM - response
+        fastcgi_read_timeout 900s;
+        # PHP-FPM - connecting
+        fastcgi_connect_timeout 60s;
+        # PHP-FPM - send request
+        fastcgi_send_timeout 900s;
+        # -------------------------------------------
+
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
