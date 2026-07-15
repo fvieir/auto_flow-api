@@ -35,9 +35,22 @@ use App\Presentation\Http\Controllers\Service\DeleteServiceController;
 use App\Presentation\Http\Controllers\Service\ListServicesController;
 use App\Presentation\Http\Controllers\Service\UpdateServiceController;
 use App\Presentation\Http\Controllers\Tenant\CreateTenantController;
+use App\Presentation\Http\Controllers\Whatsapp\ListConversationsController;
+use App\Presentation\Http\Controllers\Whatsapp\ResolveWhatsAppContextController;
+use App\Presentation\Http\Controllers\Whatsapp\SendWhatsAppMessageController;
+use App\Presentation\Http\Controllers\Whatsapp\StartConversationController;
+use App\Presentation\Http\Controllers\Whatsapp\UpdateConversationStageController;
+use App\Presentation\Webhooks\WhatsApp\Controllers\ReceiveWhatsAppWebhookController;
+use App\Presentation\Webhooks\WhatsApp\Controllers\VerifyWhatsAppWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/tenants', CreateTenantController::class);
+
+Route::get('/internal/wa/resolver', ResolveWhatsAppContextController::class);
+Route::post('/internal/whatsapp/send', SendWhatsAppMessageController::class);
+
+Route::get('/webhooks/wa', VerifyWhatsAppWebhookController::class);
+Route::post('/webhooks/wa', ReceiveWhatsAppWebhookController::class)->middleware('verify.wa.signature');
 
 Route::middleware(['force.auth', 'resolve.tenant'])->group(function (): void {
     Route::get('/me', GetMeController::class);
@@ -74,6 +87,10 @@ Route::middleware(['force.auth', 'resolve.tenant'])->group(function (): void {
     Route::delete('/clients/{client}/addresses/{address}', DeleteAddressController::class);
     Route::patch('/clients/{client}/addresses/{address}/primary', SetPrimaryAddressController::class);
     Route::get('/clients/{client}/context', GetClientContextController::class);
+
+    Route::get('/conversations', ListConversationsController::class);
+    Route::post('/conversations', StartConversationController::class);
+    Route::patch('/conversations/{conversation}/stage', UpdateConversationStageController::class);
 
     Route::get('/availability', ListAvailabilityController::class);
 
