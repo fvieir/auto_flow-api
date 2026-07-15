@@ -1,5 +1,11 @@
 <?php
 
+use App\Presentation\Http\Controllers\Appointment\CancelAppointmentController;
+use App\Presentation\Http\Controllers\Appointment\CreateAppointmentController;
+use App\Presentation\Http\Controllers\Appointment\ListAppointmentsController;
+use App\Presentation\Http\Controllers\Appointment\ListAvailabilityController;
+use App\Presentation\Http\Controllers\Appointment\RescheduleAppointmentController;
+use App\Presentation\Http\Controllers\Appointment\UpdateAppointmentStatusController;
 use App\Presentation\Http\Controllers\Client\CreateClientController;
 use App\Presentation\Http\Controllers\Client\CreateAddressController;
 use App\Presentation\Http\Controllers\Client\DeleteClientController;
@@ -68,4 +74,12 @@ Route::middleware(['force.auth', 'resolve.tenant'])->group(function (): void {
     Route::delete('/clients/{client}/addresses/{address}', DeleteAddressController::class);
     Route::patch('/clients/{client}/addresses/{address}/primary', SetPrimaryAddressController::class);
     Route::get('/clients/{client}/context', GetClientContextController::class);
+
+    Route::get('/availability', ListAvailabilityController::class);
+
+    Route::get('/appointments', ListAppointmentsController::class);
+    Route::post('/appointments', CreateAppointmentController::class);
+    Route::patch('/appointments/{appointment}/status', UpdateAppointmentStatusController::class);
+    Route::patch('/appointments/{appointment}/cancel', CancelAppointmentController::class);
+    Route::patch('/appointments/{appointment}/reschedule', RescheduleAppointmentController::class);
 });
