@@ -31,6 +31,8 @@ final class WaConversationResource extends JsonResource
             'created_at' => $conversation->createdAt()?->format(DATE_ATOM),
             'resolved_at' => $conversation->resolvedAt()?->format(DATE_ATOM),
             'metadata' => $conversation->metadata(),
+            'pending_handoff_at' => $conversation->pendingHandoffAt()?->format(DATE_ATOM),
+            'pending_handoff_subject' => $conversation->pendingHandoffSubject(),
         ];
     }
 }

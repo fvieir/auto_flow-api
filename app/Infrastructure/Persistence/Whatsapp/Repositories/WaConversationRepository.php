@@ -59,6 +59,18 @@ final class WaConversationRepository implements WaConversationRepositoryInterfac
         return $this->mapper->toDomain($model);
     }
 
+    public function requestHandoff(int $id, string $subject): WaConversation
+    {
+        $model = WaConversationModel::findOrFail($id);
+
+        $model->update([
+            'pending_handoff_at' => new DateTimeImmutable(),
+            'pending_handoff_subject' => $subject,
+        ]);
+
+        return $this->mapper->toDomain($model);
+    }
+
     public function updateStage(
         int $id,
         WaConversationStage $stage,

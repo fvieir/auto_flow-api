@@ -39,6 +39,21 @@ return [
         'graph_api_version' => env('WHATSAPP_GRAPH_API_VERSION', 'v25.0'),
         'app_secret' => env('WHATSAPP_APP_SECRET'),
         'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
+        'buffer' => [
+            'short_wait_ms' => env('WA_BUFFER_SHORT_WAIT_MS', 1500),
+            'max_wait_ms' => env('WA_BUFFER_MAX_WAIT_MS', 3000),
+        ],
+    ],
+
+    'n8n' => [
+        'webhook_url' => env('N8N_AGENT_WEBHOOK_URL'),
+        'manager_webhook_url' => env('N8N_MANAGER_AGENT_WEBHOOK_URL'),
+        'service_token' => env('N8N_API_SERVICE_TOKEN'),
+    ],
+
+    'notifications' => [
+        'reminder_cron_time' => env('APPOINTMENT_REMINDER_CRON_TIME', '09:00'),
+        'manager_summary_hour' => env('MANAGER_SUMMARY_LOCAL_HOUR', 7),
     ],
 
 ];

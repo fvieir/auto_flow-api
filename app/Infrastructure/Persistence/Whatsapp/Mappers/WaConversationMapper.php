@@ -24,6 +24,8 @@ final class WaConversationMapper
             createdAt: $model->created_at?->toDateTimeImmutable(),
             resolvedAt: $model->resolved_at?->toDateTimeImmutable(),
             metadata: $model->metadata,
+            pendingHandoffAt: $model->pending_handoff_at?->toDateTimeImmutable(),
+            pendingHandoffSubject: $model->pending_handoff_subject,
         );
     }
 }

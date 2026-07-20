@@ -21,6 +21,8 @@ final class WaConversation
         private ?DateTimeImmutable $createdAt = null,
         private ?DateTimeImmutable $resolvedAt = null,
         private ?array $metadata = null,
+        private ?DateTimeImmutable $pendingHandoffAt = null,
+        private ?string $pendingHandoffSubject = null,
     ) {
     }
 
@@ -43,8 +45,10 @@ final class WaConversation
         ?DateTimeImmutable $createdAt = null,
         ?DateTimeImmutable $resolvedAt = null,
         ?array $metadata = null,
+        ?DateTimeImmutable $pendingHandoffAt = null,
+        ?string $pendingHandoffSubject = null,
     ): self {
-        return new self($id, $tenantId, $channelContactId, $waPhoneNumberId, $status, $stage, $lastAttendantId, $createdAt, $resolvedAt, $metadata);
+        return new self($id, $tenantId, $channelContactId, $waPhoneNumberId, $status, $stage, $lastAttendantId, $createdAt, $resolvedAt, $metadata, $pendingHandoffAt, $pendingHandoffSubject);
     }
 
     /**
@@ -117,5 +121,15 @@ final class WaConversation
     public function metadata(): ?array
     {
         return $this->metadata;
+    }
+
+    public function pendingHandoffAt(): ?DateTimeImmutable
+    {
+        return $this->pendingHandoffAt;
+    }
+
+    public function pendingHandoffSubject(): ?string
+    {
+        return $this->pendingHandoffSubject;
     }
 }

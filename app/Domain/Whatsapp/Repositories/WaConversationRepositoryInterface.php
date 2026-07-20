@@ -19,6 +19,8 @@ interface WaConversationRepositoryInterface
 
     public function updateLastAttendant(int $id, ?int $attendantId): WaConversation;
 
+    public function requestHandoff(int $id, string $subject): WaConversation;
+
     /**
      * @param  ?array<string, mixed>  $metadata
      */

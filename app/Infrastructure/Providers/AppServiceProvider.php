@@ -22,7 +22,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             N8nAgentNotifier::class,
-            fn () => new N8nAgentNotifier(config('services.n8n.webhook_url')),
+            fn () => new N8nAgentNotifier(
+                config('services.n8n.webhook_url'),
+                config('services.n8n.manager_webhook_url'),
+            ),
         );
     }
 

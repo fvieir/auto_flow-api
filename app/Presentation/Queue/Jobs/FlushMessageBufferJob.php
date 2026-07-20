@@ -6,6 +6,7 @@ namespace App\Presentation\Queue\Jobs;
 
 use App\Domain\Shared\Tenancy\CurrentTenant;
 use App\Domain\Shared\ValueObjects\TenantId;
+use App\Domain\Tenant\Repositories\TenantRepositoryInterface;
 use App\Domain\Whatsapp\Repositories\ChannelContactCompanyRepositoryInterface;
 use App\Domain\Whatsapp\Repositories\ChannelContactRepositoryInterface;
 use App\Domain\Whatsapp\Repositories\WaConversationRepositoryInterface;
@@ -32,6 +33,7 @@ final class FlushMessageBufferJob implements ShouldQueue
         WaConversationRepositoryInterface $conversations,
         ChannelContactRepositoryInterface $channelContacts,
         ChannelContactCompanyRepositoryInterface $channelContactCompanies,
+        TenantRepositoryInterface $tenants,
         N8nAgentNotifier $notifier,
         CurrentTenant $currentTenant,
     ): void {
@@ -60,7 +62,7 @@ final class FlushMessageBufferJob implements ShouldQueue
 
         $text = implode("\n", array_map(fn (array $entry) => (string) ($entry['body'] ?? ''), $messages));
 
-        $notifier->notify([
+        $payload = [
             'tenant_id' => $this->tenantId,
             'conversation_id' => $this->conversationId,
             'client_id' => $company?->clientId(),
@@ -68,6 +70,11 @@ final class FlushMessageBufferJob implements ShouldQueue
             'phone' => $contact?->phone(),
             'message' => $text,
             'buffered_message_ids' => array_map(fn (array $entry) => $entry['wa_message_id'], $messages),
-        ]);
+        ];
+
+        $tenant = $tenants->findById(new TenantId($this->tenantId));
+        $isManager = $contact !== null && $tenant?->managerPhone() !== null && $contact->phone() === $tenant->managerPhone();
+
+        $isManager ? $notifier->notifyManagerAgent($payload) : $notifier->notifyClientAgent($payload);
     }
 }
